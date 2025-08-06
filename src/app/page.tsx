@@ -1,103 +1,274 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect, useRef } from 'react';
+import Head from 'next/head';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa'; // Importing icons from react-icons
+import { ArrowDownTrayIcon, CodeBracketIcon } from '@heroicons/react/24/solid'; // Still using heroicons for specific UI elements
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const heroRef = useRef(null);
+  const heroTitleRef = useRef(null);
+  const heroSubtitleRef = useRef(null);
+  const heroSocialsRef = useRef(null);
+  const aboutSectionRef = useRef(null);
+  const projectsSectionRef = useRef(null);
+  const projectItemsRef = useRef([]); // Ref for individual project cards
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  useEffect(() => {
+    // GSAP Animations
+    // Hero Section Entrance Animation
+    gsap.from([heroTitleRef.current, heroSubtitleRef.current, heroSocialsRef.current], {
+      opacity: 0,
+      y: 40,
+      duration: 1,
+      ease: 'power2.out',
+      stagger: 0.2, // Stagger the animation for title, subtitle, and socials
+    });
+
+    // About Section Animation on Scroll
+    gsap.from(aboutSectionRef.current, {
+      opacity: 0,
+      y: 50,
+      duration: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: aboutSectionRef.current,
+        start: 'top 80%', // Start animation when top of section is 80% in viewport
+        toggleActions: 'play none none none', // Play once
+      },
+    });
+
+    // Projects Section Staggered Animation on Scroll
+    gsap.fromTo(
+      projectItemsRef.current,
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        stagger: 0.2, // Stagger the animation for each project card
+        scrollTrigger: {
+          trigger: projectsSectionRef.current,
+          start: 'top 80%', // Start animation when top of projects section is 80% in viewport
+          toggleActions: 'play none none none', // Play once
+        },
+      }
+    );
+  }, []);
+
+  return (
+    <>
+      <Head>
+        <title>Aliff | Portfolio</title>
+        <meta name="description" content="Aliff's personal portfolio website" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* Google Fonts - Space Grotesk for headings, Inter for body */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com"/>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
+
+      <main className="min-h-screen bg-gradient-to-br from-gray-950 to-indigo-950 text-gray-100 font-inter antialiased">
+        {/* HERO SECTION */}
+        <section
+          ref={heroRef}
+          className="relative overflow-hidden py-24 md:py-32 text-center max-w-5xl mx-auto px-4"
+        >
+          {/* Background radial gradient for visual flair */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-800/30 via-transparent to-transparent opacity-50 z-0"></div>
+
+          <h1
+            ref={heroTitleRef}
+            className="relative z-10 text-5xl md:text-7xl lg:text-8xl font-space-grotesk font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-4 drop-shadow-lg"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Hi, I&apos;m Aliff
+          </h1>
+          <p
+            ref={heroSubtitleRef}
+            className="relative z-10 text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-10"
           >
-            Read our docs
-          </a>
-        </div>
+            A software engineer building modern, minimal, and efficient digital
+            experiences with a focus on user-centric design.
+          </p>
+          <div
+            ref={heroSocialsRef}
+            className="relative z-10 flex justify-center gap-8"
+          >
+            <a
+              href="https://github.com/aliffaizuddin"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-2 text-gray-400 hover:text-cyan-400 transition-colors duration-300 transform hover:scale-105"
+              aria-label="GitHub Profile"
+            >
+              <FaGithub className="h-7 w-7" />
+              <span className="text-lg font-medium hidden md:inline">GitHub</span>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/aliff-aizuddin-5623b2235"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors duration-300 transform hover:scale-105"
+              aria-label="LinkedIn Profile"
+            >
+              <FaLinkedin className="h-7 w-7" />
+              <span className="text-lg font-medium hidden md:inline">LinkedIn</span>
+            </a>
+            <a
+              href="mailto:aliffaizuddin47@gmail.com"
+              className="group flex items-center gap-2 text-gray-400 hover:text-teal-400 transition-colors duration-300 transform hover:scale-105"
+              aria-label="Email Me"
+            >
+              <FaEnvelope className="h-7 w-7" />
+              <span className="text-lg font-medium hidden md:inline">Email</span>
+            </a>
+          </div>
+        </section>
+
+        {/* ABOUT/RESUME SECTION */}
+        <section
+          ref={aboutSectionRef}
+          className="py-20 px-4 max-w-4xl mx-auto"
+        >
+          <div className="bg-gray-800/50 backdrop-blur-lg border border-gray-700 rounded-xl p-8 md:p-12 text-center shadow-2xl transform hover:scale-[1.01] transition-transform duration-300 ease-out">
+            <h2 className="text-4xl font-space-grotesk font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+              Curious to know more?
+            </h2>
+            <p className="text-lg md:text-xl mb-8 text-gray-300">
+              Download my resume to get a comprehensive overview of my skills,
+              experience, and professional journey.
+            </p>
+            <a
+              href="/resume.pdf"
+              download
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-gray-900 font-bold rounded-full hover:from-cyan-400 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-cyan-500/50 transform hover:-translate-y-1"
+            >
+              <ArrowDownTrayIcon className="h-6 w-6" />
+              Download Resume
+            </a>
+          </div>
+        </section>
+
+        {/* PROJECTS SECTION */}
+        <section ref={projectsSectionRef} className="mt-24 py-20 max-w-6xl mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-space-grotesk font-bold text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-teal-500">
+            My Latest Creations
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {/* Project Card 1 */}
+            <div
+              className="relative group bg-gray-800/50 backdrop-blur-md border border-gray-700 rounded-xl p-6 shadow-xl overflow-hidden
+                         hover:border-cyan-500 transition-all duration-300 transform hover:-translate-y-2"
+            >
+              {/* Glowing border effect on hover */}
+              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                              bg-gradient-to-br from-cyan-500 to-blue-500 blur-md -z-10"></div>
+
+              <div className="flex items-center gap-4 mb-4">
+                <CodeBracketIcon className="h-9 w-9 text-cyan-400 flex-shrink-0" />
+                <h3 className="text-2xl font-space-grotesk font-bold text-gray-50">Mobile Phone Based VR Car Repair and Inspection Simulator</h3>
+              </div>
+              <p className="text-sm text-gray-300 mb-4">
+              An interactive VR environment for basic car repair and inspection using Unity with real -time 
+              hand tracking functionality powered by OpenCV (Python) for immersive user interaction. 
+              </p>
+              <div className="flex flex-wrap gap-2 mb-6">
+                <span className="px-3 py-1 bg-blue-600/30 text-blue-300 text-xs font-semibold rounded-full">Unity</span>
+                <span className="px-3 py-1 bg-green-600/30 text-green-300 text-xs font-semibold rounded-full">C#</span>
+                <span className="px-3 py-1 bg-purple-600/30 text-purple-300 text-xs font-semibold rounded-full">Image Processing</span>
+              </div>
+              <a
+               href="/unity.apk"
+               download
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-semibold text-base
+                           group-hover:translate-x-1 transition-transform duration-200"
+              >
+                Download App
+                <span className="transform transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+
+            {/* Project Card 2 */}
+            <div
+              className="relative group bg-gray-800/50 backdrop-blur-md border border-gray-700 rounded-xl p-6 shadow-xl overflow-hidden
+                         hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2"
+            >
+              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                              bg-gradient-to-br from-purple-500 to-pink-500 blur-md -z-10"></div>
+
+              <div className="flex items-center gap-4 mb-4">
+                <CodeBracketIcon className="h-9 w-9 text-purple-400 flex-shrink-0" />
+                <h3 className="text-2xl font-space-grotesk font-bold text-gray-50">KTDI Hostel Booking App</h3>
+              </div>
+              <p className="text-sm text-gray-300 mb-4">
+              Hostel booking system for Kolej Tun Dr Ismail written with Angular. 
+              </p>
+              <div className="flex flex-wrap gap-2 mb-6">
+                <span className="px-3 py-1 bg-yellow-600/30 text-yellow-300 text-xs font-semibold rounded-full">Angular</span>
+                <span className="px-3 py-1 bg-red-600/30 text-red-300 text-xs font-semibold rounded-full">PhP</span>
+                <span className="px-3 py-1 bg-teal-600/30 text-teal-300 text-xs font-semibold rounded-full">Typescript</span>
+              </div>
+              <a
+                href="https://github.com/aliffaizuddin/KTDI_App/tree/main/SANN-BEAR-main/SANN-BEAR-main"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-semibold text-base
+                           group-hover:translate-x-1 transition-transform duration-200"
+              >
+                View Project
+                <span className="transform transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+
+            {/* Project Card 3 (Example) */}
+            <div
+              className="relative group bg-gray-800/50 backdrop-blur-md border border-gray-700 rounded-xl p-6 shadow-xl overflow-hidden
+                         hover:border-green-500 transition-all duration-300 transform hover:-translate-y-2"
+            >
+              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                              bg-gradient-to-br from-green-500 to-lime-500 blur-md -z-10"></div>
+
+              <div className="flex items-center gap-4 mb-4">
+                <CodeBracketIcon className="h-9 w-9 text-green-400 flex-shrink-0" />
+                <h3 className="text-2xl font-space-grotesk font-bold text-gray-50">Barber Service App</h3>
+              </div>
+              <p className="text-sm text-gray-300 mb-4">
+              A sleek and user-friendly barber booking app written with Flutter to prioritize customer satisfaction 
+              while empowering barbers to manage their business efficiently in app development. 
+              </p>
+              <div className="flex flex-wrap gap-2 mb-6">
+                <span className="px-3 py-1 bg-red-600/30 text-red-300 text-xs font-semibold rounded-full">Flutter</span>
+                <span className="px-3 py-1 bg-orange-600/30 text-orange-300 text-xs font-semibold rounded-full">Dart</span>
+                <span className="px-3 py-1 bg-blue-600/30 text-blue-300 text-xs font-semibold rounded-full">MVVM</span>
+              </div>
+              <a
+                href="https://github.com/aliffaizuddin/BarberMate"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 font-semibold text-base
+                           group-hover:translate-x-1 transition-transform duration-200"
+              >
+                View Project
+                <span className="transform transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <footer className="mt-24 py-8 text-sm text-gray-500 text-center border-t border-gray-800">
+          &copy; {new Date().getFullYear()} Aliff. All rights reserved.
+        </footer>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    </>
   );
 }
